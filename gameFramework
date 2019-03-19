@@ -1,0 +1,25 @@
+void CPlayer::Update(float dt, const RECT & rectangle)
+{
+  RECT playerRect;
+  playerRect.left   = (LONG)m_pSprite->mPosition.x - m_pSprite->width() / 2;
+  playerRect.right  = (LONG)m_pSprite->mPosition.x + m_pSprite->width() / 2;
+  playerRect.top    = (LONG)m_pSprite->mPosition.y - m_pSprite->height() / 2;
+  playerRect.bottom = (LONG)m_pSprite->mPosition.y + m_pSprite->height() / 2;
+
+  if (m_pSprite->mVelocity.x < 0 && playerRect.left <= rectangle.left)
+    this->ResetXVelocity();
+  if (m_pSprite->mVelocity.x > 0 && playerRect.right >= rectangle.right)
+    this->ResetXVelocity();
+
+  if (m_pSprite->mVelocity.y < 0 && playerRect.top <= rectangle.top)
+    this->ResetYVelocity();
+  if (m_pSprite->mVelocity.y > 0 && playerRect.bottom >= rectangle.bottom)
+    this->ResetYVelocity();
+
+  mFiredBullets.erase(remove_if(begin(mFiredBullets), end(mFiredBullets), 
+                                [&](const auto & aBullet)
+                                { return !aBullet.IsInRectangle(rectangle); }),
+                      mFiredBullets.end());
+
+	// Update sprite
+	m_pSprite->update(dt);
